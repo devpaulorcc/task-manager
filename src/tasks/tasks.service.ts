@@ -8,15 +8,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class TasksService {
   constructor(private prisma: PrismaService) {}
 
-  private tasks: Task[] = [
-    {
-      id: 1,
-      name: 'NestJS',
-      description: 'Aprendendo programação',
-      completed: false,
-    },
-  ];
-
   async findAll() {
     const allTasks = await this.prisma.task.findMany();
     return allTasks;
@@ -34,45 +25,76 @@ export class TasksService {
     throw new HttpException('Tarefa não encontrada...', HttpStatus.NOT_FOUND);
   }
 
-  create(createTaskDto: CreateTaskDto) {
-    const newId = this.tasks.length + 1;
-
-    const newTask = {
-      id: newId,
-      ...createTaskDto,
-      completed: false,
-    };
-
-    this.tasks.push(newTask);
-
-    return newTask;
+  async create(createTaskDto: CreateTaskDto) {
+    try {
+      const newTask = await this.prisma.task.create({
+        data: {
+          name: createTaskDto.name,
+          description: createTaskDto.description,
+          completed: false,
+        },
+      });
+      return newTask;
+    } catch (erro) {
+      throw new HttpException(
+        'Falha ao criar uma tarefa',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
-  update(id: string, updateTaskDto: UpdateTaskDto) {
-    const taskIndex = this.tasks.findIndex((task) => task.id === Number(id));
+  async update(id: string, updateTaskDto: UpdateTaskDto) {
+    try {
+      const findTask = await this.prisma.task.findFirst({
+        where: {
+          id: Number(id),
+        },
+      });
 
-    if (taskIndex === -1) {
-      throw new HttpException('Tarefa não existe!', HttpStatus.NOT_FOUND);
+      if (!findTask) {
+        throw new HttpException(
+          'Essa tarefa não existe!',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const task = await this.prisma.task.update({
+        where: {
+          id: findTask.id,
+        },
+        data: updateTaskDto,
+      });
+
+      return task;
+    } catch (erro) {
+      console.log('erro: '+ erro);
+      throw new HttpException(
+        'Falha ao editar a tarefa',
+        HttpStatus.BAD_REQUEST,
+      );
     }
-
-    const taskItem = this.tasks[taskIndex];
-    this.tasks[taskIndex] = {
-      ...taskItem,
-      ...updateTaskDto,
-    };
-
-    return this.tasks[taskIndex];
   }
 
-  delete(id: string) {
-    const taskIndex = this.tasks.findIndex((task) => task.id === Number(id));
-
-    if (taskIndex === -1) {
-      throw new HttpException('Tarefa não existe!', HttpStatus.NOT_FOUND);
+  async delete(id: string) {
+    try {
+      const findTask = this.prisma.task.findFirst({
+        where: {
+          id: Number(id),
+        },
+      });
+      await this.prisma.task.delete({
+        where: {
+          id: (await findTask).id,
+        },
+      });
+      return {
+        message: 'Tarefa deletada com sucesso!',
+      };
+    } catch (erro) {
+      throw new HttpException(
+        'Falha ao deletar a tarefa',
+        HttpStatus.BAD_REQUEST,
+      );
     }
-
-    this.tasks.splice(taskIndex, 1);
-
-    return { message: 'Tarefa deletada com sucesso!' };
   }
 }
