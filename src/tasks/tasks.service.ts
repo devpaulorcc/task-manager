@@ -10,7 +10,7 @@ export class TasksService {
   constructor(private prisma: PrismaService) {}
 
   async findAll(paginationDto?: PaginationDto) {
-    const { limit = 10, offset = 0 } = paginationDto;
+    const { limit = 10, offset = 0 } = paginationDto ?? {};
 
     const allTasks = await this.prisma.task.findMany({
       take: limit,

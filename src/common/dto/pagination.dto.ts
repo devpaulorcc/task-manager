@@ -7,11 +7,11 @@ export class PaginationDto {
   @Type(() => Number)
   @Min(0)
   @Max(50)
-  limit: number;
+  limit?: number = 10;
 
   @IsOptional()
   @IsInt()
-  @Type(() => Number)
+  @Type(() => Number) 
   @Min(0)
-  offset: number;
+  offset?: number = 0;
 }
