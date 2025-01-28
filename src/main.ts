@@ -14,6 +14,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true, // se TRUE ele remove as chaves que não estao no DTO
   }))
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

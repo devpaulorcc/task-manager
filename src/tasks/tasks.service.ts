@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadGatewayException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { Task } from './entities/task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -32,7 +32,7 @@ export class TasksService {
 
     if (task?.name) return task;
 
-    throw new HttpException("Tarefa não foi encontrada!", HttpStatus.NOT_FOUND)
+    throw new HttpException("Tarefa não foi encontrada!", HttpStatus.BAD_REQUEST)
 
   }
 

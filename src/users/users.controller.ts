@@ -3,6 +3,11 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
+// > Buscar os detalhes de 1 usuario (CHECK)
+// > Cadastrar usuário (CHECK)
+// > Atualizar um usuário especifico (CHECK)
+// > Deletar usuário
+
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) { }
