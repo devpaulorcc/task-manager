@@ -4,10 +4,13 @@ import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService
+  ) { }
 
   @Post()
-  signIn(@Body() signIn: SignInDto) {
-    return this.authService.authenticate(signIn);
+  signIn(@Body() signInDto: SignInDto) {
+    return this.authService.authenticate(signInDto)
   }
+
 }
