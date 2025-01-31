@@ -16,11 +16,7 @@ import { AuthModule } from 'src/auth/auth.module';
   ],
   controllers: [AppController],
   providers: [
-    AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthAdminGuard
-    // }
+    AppService
   ],
 })
 export class AppModule implements NestModule {
